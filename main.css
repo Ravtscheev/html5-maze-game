@@ -1,0 +1,177 @@
+body {
+    /* https://coolors.co/f06449-ede6e3-7d82b8-36382e-613f75  */
+    --background-color: #202020;
+    --wall-color: #200E3A;
+    --joystick-color: #210124;
+    --joystick-head-color: #f06449;
+    --ball-color: #c39259;
+    --end-color: #7d82b8;
+    --text-color: #210124;
+    --maze-color: #52D3D8;
+  
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--background-color);
+  }
+  
+  html,
+  body {
+    height: 100%;
+    margin: 0;
+  }
+  
+  #header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px 10px 24px;
+    text-align: center;
+    background: #ffffff;
+    background-color: #24252a;
+    flex-direction: row-reverse;
+  }
+
+  #game {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    margin: 0 auto;
+    background-color: #17b1a2;
+  }
+
+  #outer {
+    position: relative;
+    width: 1200px;
+    height: 720px;
+    margin: 0 auto;
+    background-color: #7598f1;
+  }
+
+  #maze {
+    position: absolute;
+    background-color: var(--maze-color);
+    width: 1200px;
+    height: 720px;
+  }
+  
+  #settings-button {
+    border-radius: 20%;
+    background-color: #313131cc;
+    height: 100%;
+    padding: 20px;
+  }
+
+  #blur-element {
+    display: flex;
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+
+  }
+
+  #play-button {
+    position: absolute;
+    width: 5em;
+    height: 5em;
+    border-radius: 20%;
+    background-color: #161616cc;
+    box-shadow: 0 9px #666666;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    
+    margin: 0 auto;
+    animation-name: glow;
+    animation-duration: 1.5s;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+    animation-timing-function: ease-in-out;
+  }
+
+  explanation-Text {
+    position: relative;
+    background-color: #000000;
+  }
+
+  #play-button:active {
+    background-color: #161616e7;
+    box-shadow: 0 5px #333333;
+    transform: translateY(4px);
+    animation-play-state: paused;
+  }
+
+
+  #end {
+    position: relative;
+    border: 5px dashed var(--end-color);
+    border-radius: 50%;
+    margin: -32px;
+    background-color: white;
+  }
+  
+  @keyframes glow {
+    0% {
+      transform: scale(1);
+    }
+    100% {
+      transform: scale(1.1);
+    }
+  }
+  
+  a:visited {
+    color: inherit;
+  }
+  
+  .ball {
+    position: absolute;
+    margin-top: -18px;
+    margin-left: -18px;
+    border-radius: 50%;
+    background-color: var(--ball-color);
+  }
+  
+  .wall {
+    position: absolute;
+    background-color: var(--wall-color);
+    transform-origin: top center;
+    margin-left: -5px;
+  }
+  
+  .wall::before,
+  .wall::after {
+    display: block;
+    content: "";
+    width: 15px;
+    height: 15px;
+    background-color: inherit;
+    border-radius: 50%;
+    position: absolute;
+  }
+  
+  .wall::before {
+    top: -7px;
+  }
+  
+  .wall::after {
+    bottom: -7px;
+  }
+  
+  .black-hole {
+    position: absolute;
+    border-radius: 50%;
+    transform-origin: center;
+    background-image: radial-gradient(circle, #000000 40%, #333333 60%, #200E3A 100%);
+    margin: -27px;
+  }
+  
+  .play-icon {
+    margin: auto auto;
+  }
