@@ -67,7 +67,7 @@ function calculateAccelerationForce(planeAngle){
 
 function calculateFrictionForce(planeAngle){
   const gravitationalAcceleration = 9.81; // gravitational acceleration in m/s^2
-  const frictionCoefficient = 0.006; // Coefficients of friction
+  const frictionCoefficient = 0.01; // Coefficients of friction
   const angleInRadians = planeAngle * (Math.PI / 180);
 
   return gravitationalAcceleration * (Math.cos(angleInRadians)) * frictionCoefficient;
@@ -122,7 +122,7 @@ function fadeOutEffect(fadeTarget) {
 
 function createBall(){
   balls = {
-    x: balls.column * (wallW + pathW) + (wallW / 2 + pathW / 2) + 780,
+    x: balls.column * (wallW + pathW) + (wallW / 2 + pathW / 2),
     y: balls.row * (wallW + pathW) + (wallW / 2 + pathW / 2) + 20,
     velocityX: 0,
     velocityY: 0
@@ -246,7 +246,7 @@ function main(timestamp) {
     return;
   }
 
-  const maxVelocity = 5;
+  const maxVelocity = 3;
 
   // Time passed since last cycle divided by 16
   // This function gets called every 16 ms on average so dividing by 16 will result in 1
