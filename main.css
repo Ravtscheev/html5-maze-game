@@ -1,6 +1,6 @@
 body {
     /* https://coolors.co/f06449-ede6e3-7d82b8-36382e-613f75  */
-    --background-color: #202020;
+    --background-color: #17b1a2;
     --wall-color: #200E3A;
     --joystick-color: #210124;
     --joystick-head-color: #f06449;
@@ -8,6 +8,7 @@ body {
     --end-color: #7d82b8;
     --text-color: #210124;
     --maze-color: #52D3D8;
+    --icon-color: #ede6e3;
   
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
     background-color: var(--background-color);
@@ -18,32 +19,15 @@ body {
     height: 100%;
     margin: 0;
   }
-  
-  #header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 20px 10px 24px;
-    text-align: center;
-    background: #ffffff;
-    background-color: #24252a;
-    flex-direction: row-reverse;
-  }
 
-  #game {
-    position: relative;
+  #outer {
+    display: flex;
     width: 100vw;
     height: 100vh;
     margin: 0 auto;
-    background-color: #17b1a2;
-  }
-
-  #outer {
-    position: relative;
-    width: 1200px;
-    height: 720px;
-    margin: 0 auto;
     background-color: #7598f1;
+    align-items: center;
+    justify-content: center;
   }
 
   #maze {
@@ -51,54 +35,58 @@ body {
     background-color: var(--maze-color);
     width: 1200px;
     height: 720px;
-  }
-  
-  #settings-button {
-    border-radius: 20%;
-    background-color: #313131cc;
-    height: 100%;
-    padding: 20px;
+    margin: 10px;
   }
 
-  #blur-element {
-    display: flex;
+  .blur-element {
     position: absolute;
-    width: 100vw;
-    height: 100vh;
     top: 0;
     left: 0;
-    background: rgba(255, 255, 255, 0.12);
-    border-radius: 16px;
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    /* Defines a grid */
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    grid-template-rows: repeat(3, 1fr);
+    /* Makes the grid take the full size of the screen */
+    width: 100%;
+    height: 100%;
+    /* Blur filter */
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
+  }
 
+  #start-screen {
+    background: #ffffff1f;
+  }
+
+  #death-screen {
+    background: #ff00008e;
+  }
+
+  #win-screen {
+    background: #00ff008e;
   }
 
   #play-button {
-    position: absolute;
+    background-color: #161616cc;
+  }
+
+  #replay-button {
+    background-color: #ff4a4ae7;
+  }
+
+  .button {
+    grid-area: 2 / 2 / 3 / 3;
     width: 5em;
     height: 5em;
     border-radius: 20%;
-    background-color: #161616cc;
-    box-shadow: 0 9px #666666;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    -webkit-transform: translate(-50%, -50%);
-    transform: translate(-50%, -50%);
-    
-    margin: 0 auto;
     animation-name: glow;
     animation-duration: 1.5s;
     animation-iteration-count: infinite;
     animation-direction: alternate;
     animation-timing-function: ease-in-out;
-  }
-
-  explanation-Text {
-    position: relative;
-    background-color: #000000;
+    box-shadow: 0 9px #666666;
+    cursor: pointer;
+    margin: auto;
   }
 
   #play-button:active {
@@ -107,7 +95,6 @@ body {
     transform: translateY(4px);
     animation-play-state: paused;
   }
-
 
   #end {
     position: relative;
@@ -124,10 +111,6 @@ body {
     100% {
       transform: scale(1.1);
     }
-  }
-  
-  a:visited {
-    color: inherit;
   }
   
   .ball {
@@ -172,6 +155,35 @@ body {
     margin: -27px;
   }
   
-  .play-icon {
+  .icon {
+    position: absolute;
+    font-size: 5em;
+    color: var(--icon-color);
+    top: -15px;
+  }
+
+  .replay-icon {
     margin: auto auto;
+  } 
+
+  .text-box {
+    margin: auto 20%;
+    padding: 40px;
+    font-size: 1em;
+    color: var(--icon-color);
+    text-align: center;
+    background: rgba(0, 0, 0, 0.53);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(8.2px);
+    -webkit-backdrop-filter: blur(8.2px);
+    border: 1px solid rgba(0, 0, 0, 0.18);
+  }
+
+  #explanation-text {
+    grid-area: 3 / 2 / 4 / 3;
+  }
+
+  #win-text {
+    grid-area: 2 / 2 / 3 / 3;
   }

@@ -11,6 +11,7 @@ var accelerationX = undefined;
 var accelerationY = undefined;
 var frictionForceX = undefined;
 var frictionForceY = undefined;
+var planeAngleTiltFactor = 0.5;
 var setter = false;
 const ballSize = 36; // Width and height of the ball
 let balls = {
@@ -32,21 +33,23 @@ function handleOrientation(event) {
   accelerationY = - calculateAccelerationForce(event.gamma);
   frictionForceX = calculateFrictionForce(event.beta);
   frictionForceY = calculateFrictionForce(event.gamma);
-
-  // updateFieldIfNotNull('Orientation_a', event.alpha);
-  // updateFieldIfNotNull('Orientation_b', event.beta);
-  // updateFieldIfNotNull('Orientation_g', event.gamma);
-  // updateFieldIfNotNull('acceleration_X', accelerationX);
-  // updateFieldIfNotNull('acceleration_Y', accelerationY);
-  // updateFieldIfNotNull('friction_X', frictionForceX);
-  // updateFieldIfNotNull('friction_Y', frictionForceY);
-  // incrementEventCount();
 }
 
 function incrementEventCount(){
   let counterElement = document.getElementById("num-observed-events")
   let eventCount = parseInt(counterElement.innerHTML)
   counterElement.innerHTML = eventCount + 1;
+}
+
+function resetGame() {
+  previousTimestamp = undefined;
+  gameInProgress = false;
+  mouseStartX = undefined;
+  mouseStartY = undefined;
+  accelerationX = undefined;
+  accelerationY = undefined;
+  frictionX = undefined;
+  frictionY = undefined;
 }
 
 function updateFieldIfNotNull(fieldName, value, precision=2){
@@ -59,9 +62,9 @@ Math.minmax = (value, limit) => {
 };
 
 function calculateAccelerationForce(planeAngle){
-  const angleInRadians = planeAngle * (Math.PI / 180);
+  const planeAngleTiltFactor = 0.5; // Tilt factor for the plane angle (0.5 is a good value)
+  const angleInRadians = planeAngleTiltFactor * planeAngle * (Math.PI / 180);
   const gravitationalAcceleration = 9.81; // gravitational acceleration in m/s^2
-
   return gravitationalAcceleration * (Math.sin(angleInRadians));
 }
 
@@ -69,7 +72,6 @@ function calculateFrictionForce(planeAngle){
   const gravitationalAcceleration = 9.81; // gravitational acceleration in m/s^2
   const frictionCoefficient = 0.01; // Coefficients of friction
   const angleInRadians = planeAngle * (Math.PI / 180);
-
   return gravitationalAcceleration * (Math.cos(angleInRadians)) * frictionCoefficient;
 }
 
@@ -79,10 +81,6 @@ function calculateVelocityDelta(acceleration, timeDelta){
 
 function calculateFrictionDelta(friction, timeDelta){
   return friction * timeDelta;
-}
-
-function calculateVelocity(velocity, velocityDelta, frictionDelta){
-  return 
 }
 
 const slowDown = (number, difference) => {
@@ -95,15 +93,11 @@ const playButton = document.getElementById("play-button");
 playButton.addEventListener("click", function(event) {
   if (!gameInProgress) {
     gameInProgress = true;
-    let blurElement = document.getElementById("blur-element");
+    let blurElement = document.getElementById("start-screen");
     fadeOutEffect(blurElement);
     window.requestAnimationFrame(main);
     // noteElement.style.opacity = 0;
-    console.log("Play");
     createBall();
-  } else {
-    gameInProgress = false;
-    console.log("Pause");
   }
 });
 
@@ -303,7 +297,6 @@ function main(timestamp) {
             balls.nextY + ballSize / 2 >= wall.y - wallW / 2 &&
             balls.nextY - ballSize / 2 <= wall.y + wallW / 2
           ) {
-          console.log("Horizontal wall");
           // Horizontal wall
           handleHorizontalWallCollision(wall, wallStart, wallEnd);
           }
@@ -312,7 +305,6 @@ function main(timestamp) {
             balls.nextX + ballSize / 2 >= wall.x - wallW / 2 &&
             balls.nextX - ballSize / 2 <= wall.x + wallW / 2
           ) {
-          console.log("Vertical wall");
           // Vertical wall
           handleVerticalWallCollision(wall, wallStart, wallEnd);
         }
