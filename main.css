@@ -1,5 +1,4 @@
 body {
-    /* https://coolors.co/f06449-ede6e3-7d82b8-36382e-613f75  */
     --background-color: #17b1a2;
     --wall-color: #200E3A;
     --joystick-color: #210124;
@@ -9,14 +8,12 @@ body {
     --text-color: #210124;
     --maze-color: #52D3D8;
     --icon-color: #ede6e3;
-  
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
     background-color: var(--background-color);
   }
   
   html,
   body {
-    height: 100%;
     margin: 0;
   }
 
@@ -25,7 +22,6 @@ body {
     width: 100vw;
     height: 100vh;
     margin: 0 auto;
-    background-color: #7598f1;
     align-items: center;
     justify-content: center;
   }
@@ -113,7 +109,7 @@ body {
     }
   }
   
-  .ball {
+  #ball {
     position: absolute;
     margin-top: -18px;
     margin-left: -18px;
@@ -167,8 +163,8 @@ body {
   } 
 
   .text-box {
-    margin: auto 20%;
-    padding: 40px;
+    margin: auto 10%;
+    padding: 30px;
     font-size: 1em;
     color: var(--icon-color);
     text-align: center;
@@ -178,10 +174,11 @@ body {
     backdrop-filter: blur(8.2px);
     -webkit-backdrop-filter: blur(8.2px);
     border: 1px solid rgba(0, 0, 0, 0.18);
+    align-items: center;
   }
 
   #explanation-text {
-    grid-area: 3 / 2 / 4 / 3;
+    grid-area: 3 / 1 / 4 / 4;
   }
 
   #win-text {

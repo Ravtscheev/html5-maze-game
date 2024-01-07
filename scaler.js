@@ -9,7 +9,7 @@ function resize(){let scale,
   height = window.innerHeight,
   isMax = width >= maxWidth && height >= maxHeight;
 
-    scale = Math.min(width/maxWidth, height/maxHeight);
+    scale = Math.min(0.6 * width/maxWidth, 0.8 * height/maxHeight);
     outer.style.transform = isMax?'':'scale(' + scale + ')';
     wrapper.style.width = isMax?'':maxWidth * scale;
     wrapper.style.height = isMax?'':maxHeight * scale;

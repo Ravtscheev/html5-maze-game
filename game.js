@@ -1,23 +1,21 @@
 import {wallW, pathW, walls, holes, holeSize, end, endSize} from './map.js';
 
 // Checks if a gyroscope is present
-var maxVelocity = 50;
 var gyroPresent = false;
 var gameInProgress = false;
 var previousTimestamp = undefined;
-let mouseStartX = undefined;
-let mouseStartY = undefined;
 var accelerationX = undefined;
 var accelerationY = undefined;
 var frictionForceX = undefined;
 var frictionForceY = undefined;
-var planeAngleTiltFactor = 0.5;
-var setter = false;
 const ballSize = 36; // Width and height of the ball
 let balls = {
-  column: 9,
-  row: 0
+  
 };
+var ballStartColumn = 9;
+var ballStartRow =  0;
+
+let deathBlurElement = document.getElementById("death-screen");
 
 window.addEventListener("deviceorientation", function(event){
     if(event.alpha || event.beta || event.gamma) {
@@ -41,15 +39,19 @@ function incrementEventCount(){
   counterElement.innerHTML = eventCount + 1;
 }
 
+function stopGame(){
+  gameInProgress = false;
+  deathBlurElement.style.display = "";
+  deathBlurElement.style.visibility = "visible";
+}
+
 function resetGame() {
   previousTimestamp = undefined;
   gameInProgress = false;
-  mouseStartX = undefined;
-  mouseStartY = undefined;
   accelerationX = undefined;
   accelerationY = undefined;
-  frictionX = undefined;
-  frictionY = undefined;
+  frictionForceX = undefined;
+  frictionForceY = undefined;
 }
 
 function updateFieldIfNotNull(fieldName, value, precision=2){
@@ -62,8 +64,7 @@ Math.minmax = (value, limit) => {
 };
 
 function calculateAccelerationForce(planeAngle){
-  const planeAngleTiltFactor = 0.5; // Tilt factor for the plane angle (0.5 is a good value)
-  const angleInRadians = planeAngleTiltFactor * planeAngle * (Math.PI / 180);
+  const angleInRadians = planeAngle * (Math.PI / 180);
   const gravitationalAcceleration = 9.81; // gravitational acceleration in m/s^2
   return gravitationalAcceleration * (Math.sin(angleInRadians));
 }
@@ -93,12 +94,24 @@ const playButton = document.getElementById("play-button");
 playButton.addEventListener("click", function(event) {
   if (!gameInProgress) {
     gameInProgress = true;
-    let blurElement = document.getElementById("start-screen");
-    fadeOutEffect(blurElement);
+    let startBlurElement = document.getElementById("start-screen");
+    fadeOutEffect(startBlurElement);
+    startBlurElement.style.display = "none";
     window.requestAnimationFrame(main);
     // noteElement.style.opacity = 0;
     createBall();
   }
+});
+
+const replayButton = document.getElementById("replay-button");
+replayButton.addEventListener("click", function(event) {
+    resetGame();
+    deleteBall();
+    createBall();
+    deathBlurElement.style.display = "none";
+    gameInProgress = true;
+    window.requestAnimationFrame(main);
+    
 });
 
 function fadeOutEffect(fadeTarget) {
@@ -116,15 +129,20 @@ function fadeOutEffect(fadeTarget) {
 
 function createBall(){
   balls = {
-    x: balls.column * (wallW + pathW) + (wallW / 2 + pathW / 2),
-    y: balls.row * (wallW + pathW) + (wallW / 2 + pathW / 2) + 20,
+    x: ballStartColumn * (wallW + pathW) + (wallW / 2 + pathW / 2),
+    y: ballStartRow * (wallW + pathW) + (wallW / 2 + pathW / 2) + 20,
     velocityX: 0,
     velocityY: 0
   };
   const ball = document.createElement("div");
-  ball.setAttribute("class", "ball");
+  ball.setAttribute("id", "ball");
   ball.style.cssText = `left: ${balls.x}px; top: ${balls.y}px; width: ${ballSize}px; height: ${ballSize}px;`;
   document.getElementById("maze").appendChild(ball);
+}
+
+function deleteBall(){
+  const element = document.getElementById("ball");
+  element.remove();
 }
 
 function handleHorizontalWallCollision(wall, wallStart, wallEnd) {
@@ -318,8 +336,7 @@ function main(timestamp) {
       });
 
       if (distance <= holeSize / 2) {
-        // The ball fell into a hole
-        throw Error("The ball fell into a hole");
+        stopGame();
       }
     });
 
@@ -327,7 +344,7 @@ function main(timestamp) {
     balls.y = balls.y + balls.velocityY;
 
     // console.log(balls.x, balls.y);
-    document.getElementsByClassName('ball')[0].style.cssText = `left: ${balls.x}px; top: ${balls.y}px; width: ${ballSize}px; height: ${ballSize}px;`;
+    document.getElementById('ball').style.cssText = `left: ${balls.x}px; top: ${balls.y}px; width: ${ballSize}px; height: ${ballSize}px;`;
   }
 
   //Allows the game to loop through the main function
@@ -340,7 +357,7 @@ function main(timestamp) {
     //noteElement.innerHTML = `Congrats, you did it!`;
     //noteElement.style.opacity = 1;
     gameInProgress = false;
-  } else {
+  } else if (gameInProgress) {
     previousTimestamp = timestamp;
     window.requestAnimationFrame(main);
   }
