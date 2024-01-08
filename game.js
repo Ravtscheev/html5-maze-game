@@ -12,6 +12,7 @@ var frictionForceY = undefined;
 var ballStartColumn = 9;
 var ballStartRow =  0;
 const ballSize = 36; // Width and height of the ball
+const maxVelocity = 6;
 // The ball object
 let balls = {};
 var deathBlurElement = document.getElementById("death-screen");
@@ -23,13 +24,22 @@ window.addEventListener("deviceorientation", function(event){
     }
 });
 
-// checks if the 
+// Event listener for the device orientation
+// The event listener is called every time the device orientation changes
+// Checks if the device is in landscape or portrait mode and sets the acceleration and friction forces accordingly
 window.addEventListener("deviceorientation", handleOrientation);
 function handleOrientation(event) {
+  if(window.innerHeight <= window.innerWidth){
   accelerationX = calculateAccelerationForce(event.beta);
   accelerationY = - calculateAccelerationForce(event.gamma);
   frictionForceX = calculateFrictionForce(event.beta);
   frictionForceY = calculateFrictionForce(event.gamma);
+  } else {
+    accelerationX = calculateAccelerationForce(event.gamma);
+    accelerationY = calculateAccelerationForce(event.beta);
+    frictionForceX = calculateFrictionForce(event.gamma);
+    frictionForceY = calculateFrictionForce(event.beta);
+  }
 }
 
 // Function to stop the game and display the death screen
@@ -105,6 +115,7 @@ function askPermission(){
   if (DeviceMotionEvent && typeof DeviceMotionEvent.requestPermission === "function"
     ) {
       DeviceMotionEvent.requestPermission();
+      gyroPresent = true;
     }
 }
 
@@ -242,6 +253,7 @@ const rollAroundCap = (cap, ball) => {
 }
 
 
+// Handles the collision with the inside of the wall
 function handleInsideWallCollision(wall) {
   if (wall.horizontal) {
     // Horizontal wall
@@ -280,8 +292,6 @@ function main(timestamp) {
     window.requestAnimationFrame(main);
     return;
   }
-
-  const maxVelocity = 6;
 
   // Time passed since last cycle divided by 16
   // This function gets called every 16 ms on average so dividing by 16 will result in 1
