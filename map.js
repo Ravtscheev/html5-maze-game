@@ -4,8 +4,11 @@
 export const pathW = 25; // Path width
 export const wallW = 15; // Wall width
 export const holeSize = 50; // Hole size
+export const endSize = 50; // End size
 const mazeElement = document.getElementById("maze");
-// Wall metadata
+
+// Defines the walls of the maze
+// Each wall is defined by its starting column and row, its orientation (horizontal or vertical) and its length
 export const walls = [
     // Border
     { column: 0, row: 0, horizontal: true, length: 30 },
@@ -118,7 +121,6 @@ export const walls = [
     { column: 28, row: 3, horizontal: false, length: 2},
     { column: 28, row: 7, horizontal: false, length: 4},
     { column: 28, row: 14, horizontal: false, length: 2},
-
   ].map((wall) => ({
     x: wall.column * (pathW + wallW),
     y: wall.row * (pathW + wallW),
@@ -126,7 +128,7 @@ export const walls = [
     length: wall.length * (pathW + wallW)
   }));
   
-  // Draw walls
+  // Draw the walls on the screen using the wall metadata defined above
   walls.forEach(({ x, y, horizontal, length }) => {
     const wall = document.createElement("div");;
     wall.setAttribute("class", "wall");
@@ -137,44 +139,14 @@ export const walls = [
         height: ${length}px;
         transform: rotate(${horizontal ? -90 : 0}deg);
       `;
-  
     mazeElement.appendChild(wall);
   });
 
-
-// Wall metadata
-const grid = [
-  // Border
-  { column: 0, row: 0, horizontal: true, length: 30 },
-  { column: 0, row: 0, horizontal: false, length: 18 },
-  { column: 0, row: 18, horizontal: true, length: 30 },
-  { column: 30, row: 0, horizontal: false, length: 18 },
-  ...Array.from({ length: 31 }, (_, i) => ({ column: i, row: 0, horizontal: false, length: 18 })),
-  ...Array.from({ length: 19 }, (_, i) => ({ column: 0, row: i, horizontal: true, length: 30 }))
-].map((wall) => ({
-  x: wall.column * (pathW + wallW),
-  y: wall.row * (pathW + wallW),
-  horizontal: wall.horizontal,
-  length: wall.length * (pathW + wallW)
-}));
-  
-  // // Draw Grid
-  // grid.forEach(({ x, y, horizontal, length }) => {
-  //   const wall = document.createElement("div");;
-  //   wall.setAttribute("class", "grid");
-  //   wall.style.cssText = `
-  //       left: ${x}px;
-  //       top: ${y}px;
-  //       height: ${length}px;
-  //       transform: rotate(${horizontal ? -90 : 0}deg);
-  //     `;
-  
-  //   mazeElement.appendChild(wall);
-  // });
-
+  // Defines the holes of the maze (black holes)
+  // Each hole is defined by its column and row and its offset from the top left corner of the cell
 export const holes = [
     { column: 0, row: 0, leftOffset: 0, topOffset: 0},
-    { column: 0, row: 3, leftOffset: 0, topOffset: 0},
+    { column: 0, row: 3, leftOffset: 0, topOffset: 8},
     { column: 0, row: 10, leftOffset: 0, topOffset: 0},
     { column: 0, row: 16, leftOffset: 0, topOffset: 0},
 
@@ -233,8 +205,8 @@ export const holes = [
     { column: 24, row: 9, leftOffset: 0, topOffset: 0},
     { column: 24, row: 16, leftOffset: 0, topOffset: 0},
 
-    { column: 26, row: 0, leftOffset: 0, topOffset: 0},
-    { column: 26, row: 2, leftOffset: 0, topOffset: 0},
+    { column: 26, row: 0, leftOffset: 0, topOffset: -5},
+    { column: 26, row: 2, leftOffset: 0, topOffset: 8},
     { column: 26, row: 7, leftOffset: 0, topOffset: 0},
     { column: 26, row: 13, leftOffset: 0, topOffset: 0},
 
@@ -246,6 +218,7 @@ export const holes = [
     y: hole.row * (wallW + pathW) + 40 + hole.topOffset,
   }));
 
+  // Draw the holes on the screen using the hole metadata defined above
   holes.forEach(({ x, y }) => {
     const ball = document.createElement("div");
     ball.setAttribute("class", "black-hole");
@@ -254,13 +227,14 @@ export const holes = [
     mazeElement.appendChild(ball);
   });
 
+  // Defines the end of the maze (the white hole)
   export const end = {
     x: 28 * (wallW + pathW) + wallW + 32, 
     y:  9 * (wallW + pathW) + wallW,
-  }
-  export const endSize = 50;
+  };
+
+  // Draw the end on the screen using the end metadata defined above
   const endElement = document.createElement("div");
   endElement.setAttribute("id", "end");
   endElement.style.cssText = `left: ${end.x}px; top: ${end.y}px; width: ${endSize}px; height: ${endSize}px`;
-  mazeElement.appendChild(endElement)
-
+  mazeElement.appendChild(endElement);

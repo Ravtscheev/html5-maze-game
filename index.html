@@ -5,27 +5,35 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Maze Game</title>
+  <!-- Bootstrap css library for Bootstrap icons -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
   <link href="main.css" rel="stylesheet">
+  <!-- The scaler is used to scale the maze for responsive design -->
+  <!-- The problem is that the maze layout (wall, holes etc.) are fixed. -->
+  <!-- Want to come up with a better solution in the future. -->
   <script src="scaler.js" type="module"></script>
+  <!-- The map.js file contains the map layout -->
   <script src="map.js" type="module"></script>
+  <!-- The game.js file contains the game logic -->
   <script src="game.js" type="module"></script>
 </head>
 
 <body>
+  <!-- The following divs represent the game and the maze. Outer is used to scale the maze-->
   <div id="game">
     <div id="outer">
       <div id="maze"></div>
     </div>
+    <!-- The following divs are used to display the start, death and win screen -->
     <div class="blur-element" id="start-screen">
       <div class="button" id="play-button">
         <div class="icon"><i class="bi bi-play"></i></div>
       </div>
         <div class="text-box" id="explanation-text">Bei dem folgenden Spiel handelt es sich um ein Murmelspiel. Ziel ist es, die Murmel
           durch das Labyrinth zu führen und dabei nicht in die Löcher zu fallen. Die Steuerung erfolgt über die Bewegung
-          des Smartphones.
+          des Smartphones (Gyroskop).
           Halte das Smartphone dabei horizontal im Querformat mit dem Bildschirm nach oben. Die Murmel bewegt sich in die Richtung, in
-          die du das Smartphone neigst. Viel Spaß!</div>
+          die du das Smartphone neigst. <br>Viel Spaß!</div>
       </div>
     </div>
   <div class="blur-element" id="death-screen" style="display: hidden; visibility: hidden;">
@@ -34,7 +42,7 @@
   </div>
 </div>
 <div class="blur-element" id="win-screen" style="display: none; visibility: hidden;"">
-  <div class="text-box" id="win-text">Du hast es geschafft! <br> Möchtest du das Spiel nochmal spielen, lade die Seite erneut.</div>
+  <div class="text-box" id="win-text">Du hast es geschafft! <br> Ich hoffe das Spiel hat dir gefallen.<br> Möchtest du das Spiel nochmal spielen, dann lade die Seite erneut.</div>
   </div>
 </body>
 

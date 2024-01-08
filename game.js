@@ -2,29 +2,28 @@ import {wallW, pathW, walls, holes, holeSize, end, endSize} from './map.js';
 
 // Checks if a gyroscope is present
 var gyroPresent = false;
+
 var gameInProgress = false;
 var previousTimestamp = undefined;
 var accelerationX = undefined;
 var accelerationY = undefined;
 var frictionForceX = undefined;
 var frictionForceY = undefined;
-const ballSize = 36; // Width and height of the ball
-let balls = {
-  
-};
 var ballStartColumn = 9;
 var ballStartRow =  0;
-
-let deathBlurElement = document.getElementById("death-screen");
+const ballSize = 36; // Width and height of the ball
+// The ball object
+let balls = {};
+var deathBlurElement = document.getElementById("death-screen");
+const playButton = document.getElementById("play-button");
 
 window.addEventListener("deviceorientation", function(event){
     if(event.alpha || event.beta || event.gamma) {
         gyroPresent = true;
-        // document.getElementById('gyroPresent').innerHTML = true;
-        // alert("Dein Gerät unterstützt kein Gyroskop.");
     }
 });
 
+// checks if the 
 window.addEventListener("deviceorientation", handleOrientation);
 function handleOrientation(event) {
   accelerationX = calculateAccelerationForce(event.beta);
@@ -33,18 +32,23 @@ function handleOrientation(event) {
   frictionForceY = calculateFrictionForce(event.gamma);
 }
 
-function incrementEventCount(){
-  let counterElement = document.getElementById("num-observed-events")
-  let eventCount = parseInt(counterElement.innerHTML)
-  counterElement.innerHTML = eventCount + 1;
-}
-
+// Function to stop the game and display the death screen
 function stopGame(){
   gameInProgress = false;
   deathBlurElement.style.display = "";
   deathBlurElement.style.visibility = "visible";
 }
 
+// Function to win the game and display the win screen
+function winGame(){
+  gameInProgress = false;
+  let winBlurElement = document.getElementById("win-screen");
+  winBlurElement.style.display = "";
+  winBlurElement.style.visibility = "visible";
+
+}
+
+// Resets the game to the initial state
 function resetGame() {
   previousTimestamp = undefined;
   gameInProgress = false;
@@ -54,52 +58,67 @@ function resetGame() {
   frictionForceY = undefined;
 }
 
-function updateFieldIfNotNull(fieldName, value, precision=2){
-  if (value != null)
-    document.getElementById(fieldName).innerHTML = value.toFixed(precision);
-}
-
+// Fuction to ensure that the value is between the min and max limits
 Math.minmax = (value, limit) => {
   return Math.max(Math.min(value, limit), -limit);
 };
 
+// Calculates the acceleration force
 function calculateAccelerationForce(planeAngle){
+  // radians = degrees * (pi/180)
   const angleInRadians = planeAngle * (Math.PI / 180);
-  const gravitationalAcceleration = 9.81; // gravitational acceleration in m/s^2
+  // gravitational acceleration in m/s^2
+  const gravitationalAcceleration = 9.81; 
   return gravitationalAcceleration * (Math.sin(angleInRadians));
 }
 
+// Calculates the friction force
 function calculateFrictionForce(planeAngle){
-  const gravitationalAcceleration = 9.81; // gravitational acceleration in m/s^2
-  const frictionCoefficient = 0.01; // Coefficients of friction
+  // gravitational acceleration in m/s^2
+  const gravitationalAcceleration = 9.81; 
+  // Coefficients of friction
+  const frictionCoefficient = 0.01;
+  // radians = degrees * (pi/180)
   const angleInRadians = planeAngle * (Math.PI / 180);
   return gravitationalAcceleration * (Math.cos(angleInRadians)) * frictionCoefficient;
 }
 
+// This function calculates the change in velocity
 function calculateVelocityDelta(acceleration, timeDelta){
   return acceleration * timeDelta;
 }
 
+// This function calculates the change in friction
 function calculateFrictionDelta(friction, timeDelta){
   return friction * timeDelta;
 }
 
+// This function slows down the ball (ball can only slow down, not reverse movement)
 const slowDown = (number, difference) => {
   if (Math.abs(number) <= difference) return 0;
   if (number > difference) return number - difference;
   return number + difference;
 };
 
-const playButton = document.getElementById("play-button");
+//handle permission for device motion for iOS
+function askPermission(){
+  if (DeviceMotionEvent && typeof DeviceMotionEvent.requestPermission === "function"
+    ) {
+      DeviceMotionEvent.requestPermission();
+    }
+}
+
 playButton.addEventListener("click", function(event) {
-  if (!gameInProgress) {
+  if (!gameInProgress && gyroPresent) {
     gameInProgress = true;
     let startBlurElement = document.getElementById("start-screen");
     fadeOutEffect(startBlurElement);
     startBlurElement.style.display = "none";
     window.requestAnimationFrame(main);
-    // noteElement.style.opacity = 0;
+    askPermission();
     createBall();
+  } else if (!gyroPresent) {
+    alert("Dein Gerät hat keinen Gyroskop-Sensor oder dein Browser unterstützt diesen nicht.");
   }
 });
 
@@ -107,6 +126,7 @@ const replayButton = document.getElementById("replay-button");
 replayButton.addEventListener("click", function(event) {
     resetGame();
     deleteBall();
+    askPermission();
     createBall();
     deathBlurElement.style.display = "none";
     gameInProgress = true;
@@ -114,6 +134,8 @@ replayButton.addEventListener("click", function(event) {
     
 });
 
+
+// Fade out effect for the start screen
 function fadeOutEffect(fadeTarget) {
   var fadeEffect = setInterval(function () {
       if (!fadeTarget.style.opacity) {
@@ -127,6 +149,7 @@ function fadeOutEffect(fadeTarget) {
   }, 20);
 }
 
+// Creates the ball at the start position
 function createBall(){
   balls = {
     x: ballStartColumn * (wallW + pathW) + (wallW / 2 + pathW / 2),
@@ -258,7 +281,7 @@ function main(timestamp) {
     return;
   }
 
-  const maxVelocity = 3;
+  const maxVelocity = 6;
 
   // Time passed since last cycle divided by 16
   // This function gets called every 16 ms on average so dividing by 16 will result in 1
@@ -298,10 +321,6 @@ function main(timestamp) {
     function BallStrip(axis, start, end){
     return axis + ballSize / 2 >= start - wallW / 2 && axis - ballSize / 2 <= end + wallW / 2;
   }
-
-  // updateFieldIfNotNull('ball-x', balls.x);
-  // updateFieldIfNotNull('ball-y', balls.x);
-
 
     walls.forEach((wall, wi) => {
       const isHorizontal = wall.horizontal;
@@ -354,8 +373,7 @@ function main(timestamp) {
   });
   
   if (winDistance <= endSize / 6) {
-    //noteElement.innerHTML = `Congrats, you did it!`;
-    //noteElement.style.opacity = 1;
+    winGame();
     gameInProgress = false;
   } else if (gameInProgress) {
     previousTimestamp = timestamp;

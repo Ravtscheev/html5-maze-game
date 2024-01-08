@@ -1,13 +1,13 @@
 body {
     --background-color: #17b1a2;
     --wall-color: #200E3A;
-    --joystick-color: #210124;
-    --joystick-head-color: #f06449;
     --ball-color: #c39259;
     --end-color: #7d82b8;
     --text-color: #210124;
     --maze-color: #52D3D8;
     --icon-color: #ede6e3;
+    --replay-button-color: #ff4a4ae7;
+    --play-button-color: #161616cc;
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
     background-color: var(--background-color);
   }
@@ -17,6 +17,7 @@ body {
     margin: 0;
   }
 
+  /* Defines a box around the maze for centering and scaling */
   #outer {
     display: flex;
     width: 100vw;
@@ -26,6 +27,7 @@ body {
     justify-content: center;
   }
 
+  /* Defines the look of the maze */
   #maze {
     position: absolute;
     background-color: var(--maze-color);
@@ -34,6 +36,7 @@ body {
     margin: 10px;
   }
 
+  /* Defines the look of the blur elements / game menu */
   .blur-element {
     position: absolute;
     top: 0;
@@ -50,26 +53,22 @@ body {
     -webkit-backdrop-filter: blur(8px);
   }
 
+  /* Defines the color of the start screen */
   #start-screen {
     background: #ffffff1f;
   }
 
+  /* Defines the color of the death screen */
   #death-screen {
     background: #ff00008e;
   }
 
+  /* Defines the color of the win screen */
   #win-screen {
     background: #00ff008e;
   }
 
-  #play-button {
-    background-color: #161616cc;
-  }
-
-  #replay-button {
-    background-color: #ff4a4ae7;
-  }
-
+  /* Defines the look of a button */
   .button {
     grid-area: 2 / 2 / 3 / 3;
     width: 5em;
@@ -85,13 +84,25 @@ body {
     margin: auto;
   }
 
-  #play-button:active {
+  /* Defines the look of a button then it is pressed */
+  .button:active {
     background-color: #161616e7;
     box-shadow: 0 5px #333333;
     transform: translateY(4px);
     animation-play-state: paused;
   }
 
+  /* Defines the color of the play button */
+  #play-button {
+    background-color: var(--play-button-color);
+  }
+
+  /* Defines the color of the replay button */
+  #replay-button {
+    background-color: var(--replay-button-color);
+  }
+
+  /* Defines the end of the maze */
   #end {
     position: relative;
     border: 5px dashed var(--end-color);
@@ -100,6 +111,7 @@ body {
     background-color: white;
   }
   
+  /* Glow effect for the buttons */
   @keyframes glow {
     0% {
       transform: scale(1);
@@ -109,6 +121,7 @@ body {
     }
   }
   
+  /* Defines the look of the ball */
   #ball {
     position: absolute;
     margin-top: -18px;
@@ -117,6 +130,7 @@ body {
     background-color: var(--ball-color);
   }
   
+  /* Defines the look of the walls */
   .wall {
     position: absolute;
     background-color: var(--wall-color);
@@ -124,7 +138,7 @@ body {
     margin-left: -5px;
   }
   
-  .wall::before,
+  /* .wall::before,
   .wall::after {
     display: block;
     content: "";
@@ -133,16 +147,9 @@ body {
     background-color: inherit;
     border-radius: 50%;
     position: absolute;
-  }
+  } */
   
-  .wall::before {
-    top: -7px;
-  }
-  
-  .wall::after {
-    bottom: -7px;
-  }
-  
+  /* Defines the look of the the holes */
   .black-hole {
     position: absolute;
     border-radius: 50%;
@@ -151,6 +158,7 @@ body {
     margin: -27px;
   }
   
+  /* Defines the look of the the icons */
   .icon {
     position: absolute;
     font-size: 5em;
@@ -158,10 +166,12 @@ body {
     top: -15px;
   }
 
+  /* Defines the look of the the replay icon */
   .replay-icon {
     margin: auto auto;
   } 
 
+  /* Defines the look of the text boxes */
   .text-box {
     margin: auto 10%;
     padding: 30px;
@@ -177,10 +187,12 @@ body {
     align-items: center;
   }
 
+  /* Defines the grid position of the explanation text */
   #explanation-text {
     grid-area: 3 / 1 / 4 / 4;
   }
 
+  /* Defines grid position of the win text */
   #win-text {
     grid-area: 2 / 2 / 3 / 3;
   }
