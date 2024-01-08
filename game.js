@@ -17,6 +17,7 @@ const maxVelocity = 6;
 let balls = {};
 var deathBlurElement = document.getElementById("death-screen");
 const playButton = document.getElementById("play-button");
+var startBlurElement = document.getElementById("start-screen");
 
 window.addEventListener("deviceorientation", function(event){
     if(event.alpha || event.beta || event.gamma) {
@@ -120,13 +121,12 @@ function askPermission(){
 }
 
 playButton.addEventListener("click", function(event) {
+  askPermission();
   if (!gameInProgress && gyroPresent) {
-    gameInProgress = true;
-    let startBlurElement = document.getElementById("start-screen");
     fadeOutEffect(startBlurElement);
     startBlurElement.style.display = "none";
+    gameInProgress = true;
     window.requestAnimationFrame(main);
-    askPermission();
     createBall();
   } else if (!gyroPresent) {
     alert("Dein Gerät hat keinen Gyroskop-Sensor oder dein Browser unterstützt diesen nicht.");
