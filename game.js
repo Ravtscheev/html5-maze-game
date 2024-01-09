@@ -2,17 +2,25 @@ import {wallW, pathW, walls, holes, holeSize, end, endSize} from './map.js';
 
 // Checks if a gyroscope is present
 var gyroPresent = false;
-
+// Checks if the game is in progress
 var gameInProgress = false;
+// The previous timestamp (is used for the main game loop)
 var previousTimestamp = undefined;
+// Acceleration force in the x direction
 var accelerationX = undefined;
+// Acceleration force in the y direction
 var accelerationY = undefined;
+// Friction force in the x direction
 var frictionForceX = undefined;
+// Friction force in the y direction
 var frictionForceY = undefined;
+// Start column of the ball
 var ballStartColumn = 9;
+// Start row of the ball
 var ballStartRow =  0;
-const ballSize = 36; // Width and height of the ball
-const maxVelocity = 6;
+// Width and height of the ball
+const ballSize = 36; 
+const maxVelocity = 4;
 // The ball object
 let balls = {};
 const playButton = document.getElementById("play-button");
@@ -324,7 +332,6 @@ function main(timestamp) {
       balls.velocityX = slowDown(balls.velocityX, frictionDeltaX);
     } else {
       balls.velocityX = balls.velocityX + velocityDeltaX;
-      balls.velocityX = Math.max(Math.min(balls.velocityX, 1.5), -1.5);
       balls.velocityX = balls.velocityX - Math.sign(velocityDeltaX) * frictionDeltaX;
       balls.velocityX = Math.minmax(balls.velocityX, maxVelocity);
     }
