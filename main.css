@@ -1,13 +1,19 @@
 body {
-    --background-color: #17b1a2;
+    --background-color: #17B1A2;
     --wall-color: #200E3A;
-    --ball-color: #c39259;
-    --end-color: #7d82b8;
+    --ball-color: #C39259;
+    --end-color: #7D82B8;
     --text-color: #210124;
     --maze-color: #52D3D8;
-    --icon-color: #ede6e3;
-    --replay-button-color: #ff4a4ae7;
-    --play-button-color: #161616cc;
+    --icon-color: #EDE6E3;
+    --replay-button-color: #FF4A4AE7;
+    --play-button-color: #161616CC;
+    --hole-color: radial-gradient(circle, #000000 40%, #333333 60%, #200E3A 100%);
+    --end-color: #FFFFFF;
+    --button-active-color: #161616E7;
+    --win-screen-color: #00FF008E;
+    --death-screen-color: #FF00008E;
+    --start-screen-color: #FFFFFF1F;
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
     background-color: var(--background-color);
   }
@@ -55,17 +61,17 @@ body {
 
   /* Defines the color of the start screen */
   #start-screen {
-    background: #ffffff1f;
+    background: var(--start-screen-color);
   }
 
   /* Defines the color of the death screen */
   #death-screen {
-    background: #ff00008e;
+    background: var(--death-screen-color);
   }
 
   /* Defines the color of the win screen */
   #win-screen {
-    background: #00ff008e;
+    background: var(--win-screen-color);
   }
 
   /* Defines the look of a button */
@@ -86,7 +92,7 @@ body {
 
   /* Defines the look of a button then it is pressed */
   .button:active {
-    background-color: #161616e7;
+    background-color: var(-button-active-color);
     box-shadow: 0 5px #333333;
     transform: translateY(4px);
     animation-play-state: paused;
@@ -108,7 +114,7 @@ body {
     border: 5px dashed var(--end-color);
     border-radius: 50%;
     margin: -32px;
-    background-color: white;
+    background-color: var(--end-color);
   }
   
   /* Glow effect for the buttons */
@@ -138,23 +144,12 @@ body {
     margin-left: -5px;
   }
   
-  /* .wall::before,
-  .wall::after {
-    display: block;
-    content: "";
-    width: 15px;
-    height: 15px;
-    background-color: inherit;
-    border-radius: 50%;
-    position: absolute;
-  } */
-  
   /* Defines the look of the the holes */
   .black-hole {
     position: absolute;
     border-radius: 50%;
     transform-origin: center;
-    background-image: radial-gradient(circle, #000000 40%, #333333 60%, #200E3A 100%);
+    background-image: var(--hole-color);
     margin: -27px;
   }
   

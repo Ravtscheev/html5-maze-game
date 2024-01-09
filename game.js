@@ -15,9 +15,10 @@ const ballSize = 36; // Width and height of the ball
 const maxVelocity = 6;
 // The ball object
 let balls = {};
-var deathBlurElement = document.getElementById("death-screen");
 const playButton = document.getElementById("play-button");
 var startBlurElement = document.getElementById("start-screen");
+const replayButton = document.getElementById("replay-button");
+var deathBlurElement = document.getElementById("death-screen");
 
 window.addEventListener("deviceorientation", function(event){
     if(event.alpha || event.beta || event.gamma) {
@@ -120,8 +121,10 @@ function askPermission(){
     }
 }
 
+// Event listener for the play button
 playButton.addEventListener("click", function(event) {
   askPermission();
+  // Checks if the game is in progress and if the device has a gyroscope
   if (!gameInProgress && gyroPresent) {
     fadeOutEffect(startBlurElement);
     startBlurElement.style.display = "none";
@@ -133,7 +136,8 @@ playButton.addEventListener("click", function(event) {
   }
 });
 
-const replayButton = document.getElementById("replay-button");
+// Event listener for the replay button
+// Resets the game and starts it again
 replayButton.addEventListener("click", function(event) {
     resetGame();
     deleteBall();
@@ -147,6 +151,7 @@ replayButton.addEventListener("click", function(event) {
 
 
 // Fade out effect for the start screen
+// Just for graphical purposes
 function fadeOutEffect(fadeTarget) {
   var fadeEffect = setInterval(function () {
       if (!fadeTarget.style.opacity) {
@@ -174,11 +179,13 @@ function createBall(){
   document.getElementById("maze").appendChild(ball);
 }
 
+// Deletes the ball from the screen
 function deleteBall(){
   const element = document.getElementById("ball");
   element.remove();
 }
 
+// Handles the collision with the horizontal wall
 function handleHorizontalWallCollision(wall, wallStart, wallEnd) {
   const isBallToLeftCap = balls.nextX + ballSize / 2 >= wallStart.x - wallW / 2 && balls.nextX < wallStart.x;
   const isBallToRightCap = balls.nextX - ballSize / 2 <= wallEnd.x + wallW / 2 && balls.nextX > wallEnd.x;
@@ -186,11 +193,13 @@ function handleHorizontalWallCollision(wall, wallStart, wallEnd) {
   handleCapCollision(isBallToLeftCap, wallStart);
   handleCapCollision(isBallToRightCap, wallEnd);
 
+  // Check if the ball is inside the wall
   if (balls.nextX >= wallStart.x && balls.nextX <= wallEnd.x) {
     handleInsideWallCollision(wall);
   }
 }
 
+// Handles the collision with the vertical wall
 function handleVerticalWallCollision(wall, wallStart, wallEnd) {
   const isBallToTopCap = balls.nextY + ballSize / 2 >= wallStart.y - wallW / 2 && balls.nextY < wallStart.y;
   const isBallToBottomCap = balls.nextY - ballSize / 2 <= wallEnd.y + wallW / 2 && balls.nextY > wallEnd.y;
@@ -202,6 +211,7 @@ function handleVerticalWallCollision(wall, wallStart, wallEnd) {
   }
 }
 
+// Handles the collision with the wall cap
 function handleCapCollision(condition, capPosition) {
   if (condition) {
     const distance = distance2D(capPosition, { x: balls.nextX, y: balls.nextY });
@@ -219,6 +229,8 @@ function handleCapCollision(condition, capPosition) {
   }
 }
 
+// Distance between the two points in 2D spaces
+// Pythagoras
 const distance2D = (p1, p2) => {
   return Math.sqrt((p2.x - p1.x) ** 2 + (p2.y - p1.y) ** 2);
 };
@@ -283,7 +295,7 @@ function handleInsideWallCollision(wall) {
 
 // Main game loop
 function main(timestamp) {
-  // It is possible to reset the game mid-game. This case the look should stop
+  // This case the look should stop
   if (!gameInProgress) return;
   
   // Checks if the previous timestamp is undefined, if so, set it to the current time
@@ -298,12 +310,14 @@ function main(timestamp) {
   const timeDelta = (timestamp - previousTimestamp) / 16;
   
 
+  // Checks if the acceleration and friction forces are defined
   if (accelerationX != undefined && accelerationY != undefined) {
     const velocityDeltaX = calculateVelocityDelta(accelerationX,timeDelta);
     const velocityDeltaY = calculateVelocityDelta(accelerationY, timeDelta);
     const frictionDeltaX = calculateFrictionDelta(frictionForceX, timeDelta);
     const frictionDeltaY = calculateFrictionDelta(frictionForceY, timeDelta);
 
+    // Checks if the ball is on a flat surface in the x direction
     if (velocityDeltaX == 0) {
       // No rotation, the plane is flat
       // On flat surface friction can only slow down, but not reverse movement
@@ -315,9 +329,8 @@ function main(timestamp) {
       balls.velocityX = Math.minmax(balls.velocityX, maxVelocity);
     }
 
+    // Checks if the ball is on a flat surface in the y direction
     if (velocityDeltaY == 0) {
-      // No rotation, the plane is flat
-      // On flat surface friction can only slow down, but not reverse movement
       balls.velocityY = slowDown(balls.velocityY, frictionDeltaY);
     } else {
       balls.velocityY = balls.velocityY + velocityDeltaY;
@@ -332,6 +345,7 @@ function main(timestamp) {
     return axis + ballSize / 2 >= start - wallW / 2 && axis - ballSize / 2 <= end + wallW / 2;
   }
 
+    // Checks if the ball is in a strip of a wall
     walls.forEach((wall, wi) => {
       const isHorizontal = wall.horizontal;
       const isBallInStrip = (axis, start, end) =>
@@ -344,7 +358,7 @@ function main(timestamp) {
             balls.nextY + ballSize / 2 >= wall.y - wallW / 2 &&
             balls.nextY - ballSize / 2 <= wall.y + wallW / 2
           ) {
-          // Horizontal wall
+          // Horizontal wall collision
           handleHorizontalWallCollision(wall, wallStart, wallEnd);
           }
         } else {
@@ -352,18 +366,20 @@ function main(timestamp) {
             balls.nextX + ballSize / 2 >= wall.x - wallW / 2 &&
             balls.nextX - ballSize / 2 <= wall.x + wallW / 2
           ) {
-          // Vertical wall
+          // Vertical wall collision
           handleVerticalWallCollision(wall, wallStart, wallEnd);
         }
         }
     });
 
+    // Checks if the ball is in a hole
     holes.forEach((hole, hi) => {
       const distance = distance2D(hole, {
         x: balls.nextX,
         y: balls.nextY
       });
 
+      // If the ball is in a hole, the game is lost
       if (distance <= holeSize / 2) {
         stopGame();
       }
@@ -372,19 +388,21 @@ function main(timestamp) {
     balls.x = balls.x + balls.velocityX;
     balls.y = balls.y + balls.velocityY;
 
-    // console.log(balls.x, balls.y);
+    // Update the ball position on the screen
     document.getElementById('ball').style.cssText = `left: ${balls.x}px; top: ${balls.y}px; width: ${ballSize}px; height: ${ballSize}px;`;
   }
 
-  //Allows the game to loop through the main function
+  // Check if the ball is in the end hole
   const winDistance = distance2D(end, {
     x: balls.nextX,
     y: balls.nextY
   });
   
+  // If the ball is in the end hole, the game is won
   if (winDistance <= endSize / 6) {
     winGame();
     gameInProgress = false;
+    // If the ball is not in the end hole, the game continues
   } else if (gameInProgress) {
     previousTimestamp = timestamp;
     window.requestAnimationFrame(main);
